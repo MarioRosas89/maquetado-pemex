@@ -29,17 +29,22 @@
                             ></v-text-field>
  
                             <v-text-field v-if="isRegister"
-                               v-model="confirmPassword"
-                               name="confirmPassword"
-                               label="Confirm Password"
-                               type="password"
-                               placeholder="cocnfirm password"
+                               v-model="email"
+                               name="email"
+                               label="Email"
+                               type="email"
+                               placeholder="Email"
                                required
                             ></v-text-field>
                             <div class="red--text"> {{errorMessage}}</div>
                             <v-btn type="submit" class="mt-4" color="primary" value="log in">{{isRegister ? stateObj.register.name : stateObj.login.name}}</v-btn>
                             <div class="grey--text mt-4" v-on:click="isRegister = !isRegister;">
                                {{toggleMessage}}  
+                            </div>
+                            <div class="form-group">
+                                <div v-if="message" class="alert alert-danger" role="alert">
+                                {{ message }}
+                                </div>
                             </div>
                        </form>
                       </v-card-text>
@@ -52,34 +57,70 @@
     </v-app>
  </template>
  
- <script>
- export default {
-   name: "App",
-   data() {
-     return {
-       username: "",
-       password: "",
-       confirmPassword: "",
+<script>
+export default {
+  name: "LoginPage",
+  components: {
+  },
+  data() {
+
+    return {
        isRegister : false,
        errorMessage: "",
+       user: {
+        username: '',
+        password: '',
+        email: '',
+       },
        stateObj: {
           register :{
              name: 'Register',
-             message: 'Aleady have an Acoount? login.'
+             errorMessage: 'Aleady have an Acoount? login.'
           },
           login : {
              name: 'Login',
-             message: 'Register'
+             errorMessage: 'Register'
           }
        }
-     };
-   },
-   methods: {
-     login() {
-       const { username } = this;
-       this.$router.replace({ name: "dashboard", params: { username: username } });
-     },
-     register() {
+    };
+  },
+  computed: {
+    loggedIn() {
+      return this.$store.state.users.initialState.status.loggedIn;
+    },
+    toggleMessage : function() { 
+           return this.isRegister ? this.stateObj.register.errorMessage : this.stateObj.login.errorMessage }
+  },
+  created() {
+    if (this.loggedIn) {
+      this.$router.push("userList");
+    }
+  },
+  methods: {
+    login() {
+      console.log("loading");
+      const { username } = this;
+      const { password } = this;
+      this.user.username = username;
+      this.user.password = password;
+      this.$store.dispatch("login", this.user).then(
+        () => {
+          console.log("va a profile");
+          this.$router.push("userList");
+        },
+        (error) => {
+
+          console.log(error.toString());
+          this.errorMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.errorMessage) ||
+            error.errorMessage ||
+            error.toString();
+        }
+      );
+    },
+    register() {
         if(this.password == this.confirmPassword){
            this.isRegister = false;
            this.errorMessage = "";
@@ -89,10 +130,6 @@
           this.errorMessage = "password did not match"
         }
      }
-   },
-       computed: {
-        toggleMessage : function() { 
-           return this.isRegister ? this.stateObj.register.message : this.stateObj.login.message }
-     }
- };
- </script>
+  },
+};
+</script>

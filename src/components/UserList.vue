@@ -31,11 +31,11 @@ export default {
   },
   computed: {
     loggedIn() {
-      return this.$store.state.initialState.loggedIn;
+      return this.$store.state.users.initialState.status.loggedIn;
     },
     users() {
       
-      let users = this.$store.state.initialState.loggedIn
+      let users = this.$store.state.users
       return users
     },
     loadingUsers() {

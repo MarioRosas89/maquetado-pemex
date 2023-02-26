@@ -2,11 +2,13 @@ import { getUsersQuery } from "./queries";
 import AuthService from '../services/auth.service';
 import UserService from '../services/user.service';
 
-const user = JSON.parse(localStorage.getItem('user'));
-const initialState = user
-  ? { status: { loggedIn: true }, user }
-  : { status: { loggedIn: false }, user: null };
-
+const initialize = JSON.parse(localStorage.getItem('user'));
+const initialState = {
+    status: {
+      loggedIn: false
+    },
+    user: initialize ? { status: { loggedIn: true }, user: initialize } : null
+  };
 
 const state = {
   loadingUsers: false,
@@ -25,25 +27,25 @@ const mutations = {
   setLoadingUsers: (state, payload) => (state.loadingUsers = payload),
   setUsers: (state, payload) => (state.users = payload),
   loginSuccess(state, user) {
-    state.status.loggedIn = true;
+    state.initialState.loggedIn = true;
     state.user = user;
   },
   loginFailure(state) {
-    state.status.loggedIn = false;
+    state.initialState.loggedIn = false;
     state.user = null;
   },
   logout(state) {
-    state.status.loggedIn = false;
+    state.initialState.loggedIn = false;
     state.user = null;
   },
   registerSuccess(state) {
-    state.status.loggedIn = false;
+    state.initialState.loggedIn = false;
   },
   registerFailure(state) {
-    state.status.loggedIn = false;
+    state.initialState.loggedIn = false;
   },
   refreshToken(state, accessToken) {
-    state.status.loggedIn = true;
+    state.initialState.loggedIn = true;
     state.user = { ...state.user, accessToken: accessToken };
   },
   SET_USER(state, user) {
