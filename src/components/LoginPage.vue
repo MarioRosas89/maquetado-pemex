@@ -27,6 +27,15 @@
                                placeholder="password"
                                required
                             ></v-text-field>
+
+                            <v-text-field v-if="isRegister"
+                               v-model="confirmPassword"
+                               name="confirmPassword"
+                               label="confirmPassword"
+                               type="confirmPassword"
+                               placeholder="confirmPassword"
+                               required
+                            ></v-text-field>
  
                             <v-text-field v-if="isRegister"
                                v-model="email"
@@ -70,6 +79,7 @@ export default {
        username: "",
        email: "",
        password: "",
+       confirmPassword: "",
        user: {
         username: '',
         password: '',
@@ -104,10 +114,9 @@ export default {
       console.log("loading");
       const { username } = this;
       const { password } = this;
-      const isUser = this.username + this.email + this.password;
-      console.log(isUser);
       this.user.username = username;
       this.user.password = password;
+
       this.$store.dispatch("login", this.user).then(
         () => {
           console.log("va a profile");
@@ -127,6 +136,32 @@ export default {
     },
     register() {
         if(this.password == this.confirmPassword){
+         this.message = "";
+            this.successful = false;
+            this.loading = true;
+            const { username } = this;
+         const { password } = this;
+         const { email } = this;
+         this.user.username = username;
+         this.user.password = password;
+         this.user.email = email;
+            this.$store.dispatch("register", this.user).then(
+            (data) => {
+               this.message = data.message;
+               this.successful = true;
+               this.loading = false;
+            },
+            (error) => {
+               this.message =
+                  (error.response &&
+                  error.response.data &&
+                  error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+               this.successful = false;
+               this.loading = false;
+            }
+            );
            this.isRegister = false;
            this.errorMessage = "";
            this.$refs.form.reset();
