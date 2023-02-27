@@ -6,10 +6,10 @@
           <tr v-for="item in items" :key="item.id">
             <td>{{ item.username }}</td>
             <td>{{ item.email }}</td>
-            <v-data-table-cell>
+            <td>
               <v-btn text @click="editUser(item)">Edit</v-btn>
               <v-btn text @click="deleteUser(item.id, item.accessToken)">Delete</v-btn>
-            </v-data-table-cell>
+            </td>
           </tr>
         </tbody>
       </template>
@@ -44,6 +44,7 @@ export default {
       headers: [
         { text: 'Username', value: 'username' },
         { text: 'Email', value: 'email' },
+        { text: 'Actions' },
       ],
       selectedUserData: null,
       usersload: [],
@@ -69,7 +70,6 @@ export default {
     },
     
     loadingUser() {
-      // eslint-disable-next-line no-console
       console.log('Loading!')
       return this.$store.state.users.getterLoadingUsers
     }
@@ -88,6 +88,9 @@ export default {
           console.error(error); // Handle any errors
         });
     },
+    closeDialog() {
+      this.dialog = false;
+    },
     editUser(user) {
       this.editedUser = { ...user };
       this.dialog = true;
@@ -97,7 +100,6 @@ export default {
           this.dialog = false;
           UserService.update(this.editedUser).then(
             (edited) => {
-              console.log("borraUsuario");
               this.getUsers()
               return edited
             },
