@@ -55,12 +55,13 @@ const mutations = {
 
 const actions = {
   getUsers: async ({ commit }) => {
-    commit("setLoadingUsers", true);
+    //commit("setLoadingUsers", true);
     const result = await getUsersQuery();
     if (result && result.data) {
       commit("setUsers", result.data);
+      return result.data;
     }
-    commit("setLoadingUsers", false);
+    //commit("setLoadingUsers", false);
   },
   login({ commit }, user) {
     return AuthService.login(user).then(

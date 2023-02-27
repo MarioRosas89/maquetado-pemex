@@ -10,6 +10,7 @@ export default new Router({
   routes: [
     {
       path: '/',
+      alias: ['/login', '/signin'], 
       name: 'login',
       component: LoginPage
     },

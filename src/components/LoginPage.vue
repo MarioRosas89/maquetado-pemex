@@ -42,8 +42,8 @@
                                {{toggleMessage}}  
                             </div>
                             <div class="form-group">
-                                <div v-if="message" class="alert alert-danger" role="alert">
-                                {{ message }}
+                                <div v-if="errorMessage" class="alert alert-danger" role="alert">
+                                {{ errorMessage }}
                                 </div>
                             </div>
                        </form>
@@ -67,6 +67,9 @@ export default {
     return {
        isRegister : false,
        errorMessage: "",
+       username: "",
+       email: "",
+       password: "",
        user: {
         username: '',
         password: '',
@@ -101,6 +104,8 @@ export default {
       console.log("loading");
       const { username } = this;
       const { password } = this;
+      const isUser = this.username + this.email + this.password;
+      console.log(isUser);
       this.user.username = username;
       this.user.password = password;
       this.$store.dispatch("login", this.user).then(

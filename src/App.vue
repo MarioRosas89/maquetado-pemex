@@ -1,11 +1,120 @@
 <template>
-  <v-container fluid class="grey lighten-5">
-      <router-view />
-  </v-container>
-  </template>
+  
+    <v-app>
+      <v-app-bar app color="primary">
+        <v-toolbar-title>
+          <router-link to="/" class="white--text">
+            Pemex
+          </router-link>
+        </v-toolbar-title>
+  
+        <v-navigation-drawer v-model="drawer" app>
+          <v-list>
+            <v-list-item v-if="currentUser" :to="'/profile/' + currentUser.id">
+              <v-list-item-icon>
+                <v-icon>mdi-account</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>
+                {{ currentUser.username }}
+              </v-list-item-title>
+            </v-list-item>
+  
+            <v-divider v-if="currentUser" />
+  
+            <v-list-item to="/home">
+              <v-list-item-icon>
+                <v-icon>mdi-home</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>
+                Home
+              </v-list-item-title>
+            </v-list-item>
   
   
-  <style>
+  
+            <v-list-item v-if="!currentUser" to="/register">
+              <v-list-item-icon>
+                <v-icon>mdi-account-plus</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>
+                Sign Up
+              </v-list-item-title>
+            </v-list-item>
+  
+            <v-list-item v-if="!currentUser" to="/  ">
+              <v-list-item-icon>
+                <v-icon>mdi-login</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>
+                Login
+              </v-list-item-title>
+            </v-list-item>
+  
+            <v-list-item v-if="currentUser" @click.prevent="logOut">
+              <v-list-item-icon>
+                <v-icon>mdi-logout</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>
+                LogOut
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-navigation-drawer>
+  
+        <v-spacer />
+  
+        <v-btn icon @click="drawer = !drawer" v-if="currentUser">
+          <v-icon>mdi-menu</v-icon>
+        </v-btn>
+      </v-app-bar>
+      <v-main>
+        <v-container>
+          <router-view />
+        </v-container>
+      </v-main>
+    </v-app>
+  
+    </template>
+    
+    
+  
+    <script>
+  export default {
+    data() {
+      return {
+        drawer: false
+      };
+    },
+    methods: {
+      logOut() {
+        this.$store.dispatch('logout');
+        this.$router.push('/login');
+      }
+    },
+    computed: {
+    currentUser() {
+      return this.$store.state.users;
+    }
+  },
+
+  };
+  </script>
+    <style>
+    #app {
+      font-family: Avenir, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #2c3e50;
+    }
+
+  #app {
+    font-family: "Avenir", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
+  }
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
